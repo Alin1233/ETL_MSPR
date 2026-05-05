@@ -15,7 +15,7 @@ def load_insee_brut(*args, **kwargs):
     """
     Loads the raw dossier_complet_2025.csv into a pandas DataFrame.
     """
-    base_path = Path(get_repo_path()) / "data" / "dossier_complet_2025"
+    base_path = Path(get_repo_path()) / "raw_data"
     source_path = base_path / "dossier_complet_2025.csv"
 
     if not source_path.exists():
