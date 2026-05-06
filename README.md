@@ -25,7 +25,7 @@ python -m src.preprocessing.run_pipeline --input data --year all --format parque
 - `--year` / `--years` : `all` par défaut, ou liste séparée par des virgules
 - `--strict` : échoue si un jeu de données attendu manque dans le dossier
 
-## Outputs
+### Outputs
 Le format final contient 16 colonnes harmonisées :
 
 - métadonnées d’élection : `annee_election`, `tour`
@@ -33,7 +33,7 @@ Le format final contient 16 colonnes harmonisées :
 - agrégats commune : `inscrits`, `abstentions`, `votants`, `blancs_nuls`, `exprimes`
 - ligne résultat : `code_nuance`, `nom`, `prenom`, `liste`, `voix`
 
-## Tables de fait & dimensions
+### Tables de fait & dimensions
 Le fichier `processed_data/elections_flat.csv` peut être transformé en modèle en étoile.
 
 Tables générées :
@@ -48,6 +48,7 @@ Grain des facts :
 - `fact_resultats_liste` : 1 ligne = 1 candidat/liste dans 1 commune, pour 1 tour et 1 annee
 
 ### Export CSV des tables du modele en etoile
+Nécessite de run le pipeline de preprocessing pour générer `processed_data/elections_flat.csv` avant.
 ```powershell
 python -m src.starschema.build_star_schema --input processed_data/elections_flat.csv --output-dir processed_data/star_schema --export csv
 ```
@@ -64,6 +65,7 @@ tables_df = export_tables_dataframes(tables)
 ```
 
 ## Pipeline INSEE
+Nécessite de run le pipeline schéma étoile pour générer `processed_data/star_schema/dim_geographie.csv` avant.
 ```powershell
 python -m src.insee_processing.run_flatten_dossier_complet
 ```
