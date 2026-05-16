@@ -26,4 +26,4 @@ def load_from_s3(*args, **kwargs):
         OBJECT_KEY,
     )
     print(f"✅ INSEE loaded: {len(df)} rows")
-    return df
+    return {"insee_raw": df}

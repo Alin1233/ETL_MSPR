@@ -14,10 +14,11 @@ BUCKET_NAME = 'elections-raw'
 OBJECT_KEY = 'insee/raw/dossier_complet_2025.parquet'
 
 @data_exporter
-def export_data_to_s3(df: DataFrame, **kwargs) -> None:
+def export_data_to_s3(data: dict, **kwargs) -> None:
     """
     Exports the raw INSEE DataFrame to RustFS S3 as Parquet.
     """
+    df = data["insee_raw"]
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 

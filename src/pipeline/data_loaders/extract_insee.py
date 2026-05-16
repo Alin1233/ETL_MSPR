@@ -23,15 +23,30 @@ def load_insee_brut(*args, **kwargs):
 
     print(f"Reading raw INSEE data from {source_path}...")
     
-    # We read everything as string to prevent mixed types warnings, 
-    # the types will be coerced during the transform block according to the mapping.
+    # Read mapping to find which columns we actually need
+    mapping_path = Path(get_repo_path()) / "src" / "insee_processing" / "mapping_dossier_complet.csv"
+    mapping_df = pd.read_csv(mapping_path, sep=";", encoding="utf-8", dtype=str)
+    
+    # We always need CODGEO, plus any source_code mentioned in the mapping
+    required_columns = {"CODGEO"} | set(mapping_df["source_code"].dropna().str.strip())
+    
+    # Read only the header of the raw file to see which required columns actually exist
+    raw_columns = set(pd.read_csv(source_path, sep=";", encoding=kwargs.get("encoding", DEFAULT_ENCODING), nrows=0).columns)
+    usecols = list(required_columns.intersection(raw_columns))
+    
+    print(f"Optimizing extract: Loading only {len(usecols)} columns instead of 1900+...")
+
+    # We read everything as string to prevent mixed types warnings
     df = pd.read_csv(
         source_path,
         sep=";",
         encoding=kwargs.get("encoding", DEFAULT_ENCODING),
         dtype=str,
+        usecols=usecols,
         low_memory=False
     )
     
     print(f"✅ Loaded {len(df)} rows and {len(df.columns)} columns.")
-    return df
+    # We return a dictionary to prevent Mage AI from attempting to 
+    # compute UI statistics on 1900+ columns, which causes it to hang/crash.
+    return {"insee_raw": df}

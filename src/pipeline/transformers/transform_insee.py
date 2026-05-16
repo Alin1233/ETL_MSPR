@@ -19,12 +19,13 @@ from src.insee_processing.flatten_dossier_complet import (
 )
 
 @transformer
-def transform_insee(df: pd.DataFrame, *args, **kwargs) -> Dict[str, pd.DataFrame]:
+def transform_insee(data: dict, *args, **kwargs) -> Dict[str, pd.DataFrame]:
     """
     Transforms the raw INSEE data in-memory based on the mapping file.
     Returns a dictionary of DataFrames, where keys are table names and 
     values are the corresponding processed DataFrames (Fact tables).
     """
+    df = data["insee_raw"]
     repo_root = Path(get_repo_path())
     mapping_path = repo_root / "src" / "insee_processing" / "mapping_dossier_complet.csv"
     
